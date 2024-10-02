@@ -1,0 +1,7 @@
+FROM node:lts
+
+WORKDIR /app/sunva-frontend
+ADD .  /app/sunva-frontend
+RUN npm install
+CMD npm run dev
+
