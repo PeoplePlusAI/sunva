@@ -1,0 +1,22 @@
+
+.text-display {
+    text-wrap: wrap;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+#text-cursor {
+    width: 1px;
+    margin-bottom: -2px;
+    height: 15px;
+    background: rgba(100, 100, 100, 0.8);
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        background-color: transparent;
+    }
+}

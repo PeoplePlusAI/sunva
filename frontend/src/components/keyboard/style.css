@@ -1,0 +1,36 @@
+.keyboard-cont {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    @apply px-0 pb-2;
+}
+
+.keys {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 0;
+    border-radius: 5px;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: #fff;
+    cursor: pointer;
+    border: 1px solid #e6e6e6;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji
+}
+
+.keys:active {
+    background: rgba(100, 100, 100, 0.1);
+}
+
+
+.keyboard-cont .keys .value {
+    font-size: 20px;
+}
+
+.keyboard-cont .keys .subvalues {
+    opacity: 0.5;
+    margin-left: 5px;
+    margin-top: 5px;
+}

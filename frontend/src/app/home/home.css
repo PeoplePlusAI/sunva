@@ -1,0 +1,145 @@
+.record-btn {
+    position: relative;
+    background: #b2ffda;
+    /*outline: 10px solid rgba(178, 255, 218, 0.3);*/
+}
+
+.record-btn:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(178, 255, 218, 0.3);
+    border-radius: 100%;
+    scale: 1.5;
+    z-index: 10;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(0.9);
+    }
+}
+
+.record-btn.recording {
+    background: #ffcac1;
+
+}
+
+.record-btn.recording:after {
+    background: rgb(255, 202, 193, 0.3);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.message-you {
+    background: #FDF2DB;
+}
+
+.message-you label {
+    color: #A27413;
+}
+
+.message-1 {
+    background: #E5F7FF;
+}
+
+.message-1 label {
+    color: #00B1FF;
+}
+
+.message-2 {
+    background: #EFFFF3;
+}
+
+.message-2 label {
+    color: #259641;
+}
+
+.message-box {
+    @apply p-4 rounded-xl overflow-hidden h-fit;
+}
+
+.message-box:nth-child(odd) {
+    @apply message-1;
+}
+
+.message-box:nth-child(even) {
+    @apply message-2;
+}
+
+.message-box[data-type="You"] {
+    @apply message-you;
+}
+
+.message-box p {
+    overflow: auto; /* or visible */
+    text-overflow: ellipsis; /* optional for truncating long text */
+    white-space: normal; /* allows wrapping of text */
+}
+
+.summarize , .highlight {
+    position: relative;
+}
+
+.summarize::after , .highlight::after {
+    content: 'Summarized';
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #00956b;
+    color: white;
+    border-radius: 0 0 0 5px;
+    padding: 1px 10px;
+    font-size: 13px;
+}
+
+.highlight::after {
+    content: 'Highlighted';
+}
+
+.view-og-btn {
+
+    @apply rounded-full px-2 py-1 text-sm;
+    background: #DADADA;
+}
+
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+}
+
+.status-indicator.active {
+    background: #37CC1A;
+    background: radial-gradient(at center, #37CC1A, #12a800);
+    box-shadow: 1px 0 3px #37CC1A, -1px 0 3px #37CC1A;
+}
+
+.status-indicator.inactive {
+    background: #F60101;
+    background: radial-gradient(at center, #F60101, #A10101);
+    box-shadow: 1px 0 3px #A10101, -1px 0 3px #A10101;
+}
+
+.window {
+    position: fixed;
+    inset: 0;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.window-visible {
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+.window-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+}

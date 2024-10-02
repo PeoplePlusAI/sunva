@@ -1,0 +1,12 @@
+
+.login-form .unit {
+    width: 100%;
+}
+
+.login-form .unit label {
+    @apply font-semibold mb-1;
+}
+
+.login-form .unit input {
+    @apply border-opacity-50 border-brand-secondary h-[44px] px-2;
+}
