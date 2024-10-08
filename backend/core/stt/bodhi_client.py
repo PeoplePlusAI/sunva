@@ -21,38 +21,53 @@ class BodhiSTT:
             "x-customer-id": self.customer_id,
         }
 
-        async with websockets.connect(self.server_addr, extra_headers=request_headers) as ws:
-            await ws.send(json.dumps({
-                "config": {
-                    "sample_rate": 16000,
-                    "transaction_id": str(uuid.uuid4()),
-                    "model": self.model,
-                }
-            }))
+        try:
+            async with websockets.connect(self.server_addr, extra_headers=request_headers) as ws:
+                await ws.send(json.dumps({
+                    "config": {
+                        "sample_rate": 16000,
+                        "transaction_id": str(uuid.uuid4()),
+                        "model": self.model,
+                    }
+                }))
 
-            while True:
-                chunk = audio_buffer.read(chunk_size)
-                if not chunk:
-                    break
-                await ws.send(chunk)
+                # Send audio data
+                while True:
+                    chunk = audio_buffer.read(chunk_size)
+                    if not chunk:
+                        break
+                    await ws.send(chunk)
 
-            await ws.send('{"eof": 1}')
+                await ws.send('{"eof": 1}')
 
-            previous_text = ""  # Track the last transcription
+                previous_text = ""  # Track the last transcription
 
-            async for response in ws:
-                response_data = json.loads(response)
-                transcript_text = response_data.get("text", "")
+                while True:
+                    try:
+                        response = await ws.recv()
+                    except websockets.exceptions.ConnectionClosed:
+                        print("WebSocket connection closed unexpectedly")
+                        break
 
-                if transcript_text:
-                    # Find the new part of the transcription
-                    new_text = transcript_text[len(previous_text):]
-                    previous_text = transcript_text  # Update previous_text for the next iteration
+                    response_data = json.loads(response)
+                    transcript_text = response_data.get("text", "")
 
-                    yield new_text  # Yield only the new part
+                    if transcript_text:
+                        # Find the new part of the transcription
+                        new_text = transcript_text[len(previous_text):]
+                        previous_text = transcript_text  # Update previous_text for the next iteration
 
-                if response_data.get("eos", False):
-                    yield "<EOF>"
+                        yield new_text  # Yield only the new part
+
+                    if response_data.get("eos", False):
+                        yield "<EOF>"
+                        break
+
+        except websockets.exceptions.WebSocketException as e:
+            print(f"WebSocket error: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
     async def transcribe(self, audio_file: str) -> str:
         with open(audio_file, "rb") as file:
             audio_buffer = io.BytesIO(file.read())
