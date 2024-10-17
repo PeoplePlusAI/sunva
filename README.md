@@ -40,12 +40,7 @@ The [first version of the POC](https://www.figma.com/proto/xK0fvVJL9wRWTkwdBeRu2
 
 Based on the user feedback from our focus groups, we will refine and add more features to the POC.
 
-
-Edit this section with a brief explanation of your project.
-
 ## Getting Started
-
-Update this section with instructions on how to get started with your project:
 
 1. Clone the repository: `git clone https://github.com/PeoplePlusAI/sunva,git`
 
@@ -71,9 +66,6 @@ Provide instructions for reporting issues:
 
 If you encounter any issues with the project, please create a new issue using the [issue template](.github/ISSUE_TEMPLATE.md). Provide as much detail as possible to help us understand and resolve the issue.
 
-## Pull Requests
-
-Explain your process for accepting pull requests:
 
 
 ## Volunteer & contribute
