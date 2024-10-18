@@ -70,7 +70,7 @@ If you encounter any issues with the project, please create a new issue using th
 
 ## Volunteer & contribute
 
-If you are interested in volunteering for this project, please refer to [this link](https://peopleplus.ai/volunteer) for more information. 
+If you are interested in volunteering with us for SUNVA or other projects that excites you, please go through the [people+ai projects](https://pplus.ai/projects) and fill the volunteer form!
 
 If you would like to contribute to the codebase, please refer to the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file for more information. We appreciate your contributions!
 
