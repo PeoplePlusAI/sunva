@@ -5,10 +5,11 @@ export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 export type TMessage = {
     name: string;
     message: string;
-    modified?: string;
-    type?: "concise" | "highlight";
-    id: string
-}
+    original?: string;  // Optional field for storing the original message
+    modified?: string;  // Optional field for storing the modified/enhanced version
+    type?: "concise" | "highlight" | "tts"; // Add "tts" for TTS messages
+    id: string;         // Unique identifier for each message
+};
 
 export type TInputModes = 'abc' | 'ABC' | '123';
 
