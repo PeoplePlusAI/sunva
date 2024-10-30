@@ -18,7 +18,6 @@ class Ai4BharatTTS:
         print(text)
 
         response = self.TTS.textToSpeech(ttsServiceId,text,targetLanguage)
-        print(response)
         #print(response.text)
 
         data = response
