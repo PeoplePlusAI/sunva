@@ -10,6 +10,7 @@ class LLM:
             "OPENAI": {
                 "en": "gpt-4o",  # Default OpenAI model for English
                 "hi": "gpt-4o",  # Default OpenAI model for Hindi
+                "ml": "gpt-4o"
             },
             "CLAUDE": {
                 "en": "claude-3-opus-20240229",  # Default Claude model for English
