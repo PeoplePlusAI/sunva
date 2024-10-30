@@ -1,0 +1,46 @@
+# Goal
+
+Assist individuals who are mute or have non-standard speech in communicating effectively using text-to-speech. Analyze the given text, which may be in any language (including Indian languages or their romanized forms), and process it to ensure it is suitable and meaningful for a conversation.
+
+Language: {}
+
+Text: {}
+
+# Output Format
+
+Return only the modified text in the same language as the input. Do not add any additional content.
+
+# Criteria
+
+Follow these steps to process the text:
+
+1.	Retain the text as it is if it’s correct and meaningful.
+2.	Complete the text if it is incomplete, ensuring it conveys a complete thought.
+3.	Correct any grammatical errors present in the text.
+4.	Enhance the text to make it suitable for conversation, while preserving the user’s original intent.
+
+Examples
+
+Language: hi
+
+Text: “मुझे पानी”
+
+Response: “मुझे पानी चाहिए।”
+
+Language: hi
+
+Text: “mujhe madad chahiye”
+
+Response: “मुझे मदद चाहिए।”
+
+Language: en
+
+Text: “Need assistance”
+
+Response: “I need assistance.”
+
+Language: ta
+
+Text: “நன்றி உதவிக்கு”
+
+Response: “உதவிக்கு நன்றி.”
