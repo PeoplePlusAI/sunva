@@ -23,8 +23,11 @@ from core.utils.executor_utils import executor
 from core.ai.speech import speech_to_text
 from core.ai.text import process_transcription
 from core.db.redis_client import redis_client
+from concurrent.futures import ThreadPoolExecutor
 import traceback
 import asyncio
+import numpy as np
+import logging
 import json
 import io
 import os
@@ -35,6 +38,7 @@ load_dotenv(
 )
 
 router = APIRouter()
+executor = ThreadPoolExecutor(max_workers=5)  # Adjust based on server capacity
 
 user_sessions = {}
 
@@ -62,6 +66,7 @@ async def websocket_transcribe_and_process(websocket: WebSocket):
     audio_buffer = io.BytesIO()
     WORD_THRESHOLD = 30
     message_id = None
+    user_id = None
 
     try:
         while True:
@@ -211,6 +216,7 @@ async def websocket_transcribe_and_process(websocket: WebSocket):
             "processed_transcription": processed_transcription.strip()
         })
 
+
 @router.post("/v1/transcription/save")
 async def save_transcription(user_id: str, language: str, session: AsyncSession = Depends(get_session)):
     # Retrieve the transcription data from Redis
@@ -239,3 +245,4 @@ async def save_transcription(user_id: str, language: str, session: AsyncSession 
         return {"status": "success", "message": "Transcription saved successfully."}
     else:
         raise HTTPException(status_code=500, detail="Failed to retrieve session data.")
+

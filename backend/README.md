@@ -25,6 +25,10 @@ BASE_MODEL=model_name (eg: Claude 3 Sonnet)
 SPEECH_BASE_MODEL=model_name (eg: Whisper Large)
 TTS_BASE_MODEL=model_name (eg: coqui-tacotron2)
 JWT_SECRET_KEY=your_secret_key
+GOOGLE_PROJECT_ID=<YOUR_PROJECT_ID>
+GOOGLE_PROJECT_JSON=<YOUR_JSON_FILE>
+PREFERRED_STT_MODEL=GOOGLE (or GROQ or BODHI)
+PREFERRED_LLM_MODEL=OPENAI (or GROQ or CLAUDE)
 ```
 5. Run the POC
 ```

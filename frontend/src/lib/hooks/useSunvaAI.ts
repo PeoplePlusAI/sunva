@@ -24,7 +24,7 @@ async function startRecording(setRecording: StateSetter<boolean>, setIsActive: S
             mimeType: 'audio/wav',
             numberOfAudioChannels: 1,  // Mono channel is sufficient for speech recognition
             desiredSampRate: 16000,
-            timeSlice: 5000, // Get data every 5 seconds
+            timeSlice: 3000, // Get data every 3 seconds
             ondataavailable: (blob) => {
                 if (blob && blob.size > 0) {
                     audioQueue.push(blob);

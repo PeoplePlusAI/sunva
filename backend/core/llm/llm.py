@@ -2,6 +2,13 @@ from core.llm.groq_client import Groq
 from core.llm.openai_client import OpenAi
 from core.llm.claude_client import Claude
 from typing import List, Tuple
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv("ops/.env")
+
+PREFERRED_LLM_MODEL = os.getenv("PREFERRED_LLM_MODEL")
 
 class LLM:
     def __init__(self, language: str):
@@ -35,8 +42,12 @@ class LLM:
         self.model_id, self.model_enum = self._select_model()
 
     def _select_model(self) -> Tuple[str, str]:
+        if self.preferred_model and self.preferred_model in self.models:
+            if self.language in self.models[self.preferred_model]:
+                return self.models[self.preferred_model][self.language], self.preferred_model
+
         for model_enum, lang_models in self.models.items():
-            if self.language in lang_models and lang_models[self.language]:
+            if self.language in lang_models:
                 return lang_models[self.language], model_enum
         raise ValueError(f"Unsupported language: {self.language} or no models available for this language")
 
