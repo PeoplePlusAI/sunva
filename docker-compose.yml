@@ -2,7 +2,7 @@ services:
   sunva-backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./backend/ops/.env:/apps/sunva-backend/ops/.env
       - ./backend/data:/apps/sunva-backend/data sunva-backend
