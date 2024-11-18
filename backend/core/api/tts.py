@@ -47,13 +47,14 @@ async def tts_websocket(
             
             selected_language = message.get("language", "en") #This sets the lang everywhere for pipeline.
             user_id = message.get("user_id", "default_user")
+            gender = message.get("gender", "female")
 
             if "text" in message:
                 text = message["text"]
                 print(f"Received text for TTS: {text}")
 
                 wav_data = await asyncio.get_event_loop().run_in_executor(
-                    executor, text_to_speech, text, tts_model, selected_language
+                    executor, text_to_speech, text, tts_model, selected_language, gender
                 )
             else:
                 wav_data = None
