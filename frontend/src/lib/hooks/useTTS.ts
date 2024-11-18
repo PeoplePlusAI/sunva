@@ -1,10 +1,9 @@
 import {useEffect, useState} from "react";
+import {IUserSession, useSession} from "@/lib/context/sessionContext";
 
-function sendTtsText(text: string, lang: string, beforeMsgSend: () => void) {
+function sendTtsText(text: string, session: IUserSession, beforeMsgSend: () => void) {
     beforeMsgSend();
     let ttsSocket: WebSocket;
-
-    console.log(process.env.NEXT_PUBLIC_WS_BACKEND);
 
     // @ts-ignore
     if (!ttsSocket || ttsSocket.readyState !== WebSocket.OPEN) {
@@ -13,7 +12,8 @@ function sendTtsText(text: string, lang: string, beforeMsgSend: () => void) {
             console.log("TTS WebSocket connected");
             ttsSocket.send(JSON.stringify({
                 text,
-                language: lang
+                language: session.lang,
+                gender: session.voice_model
             }));
         };
     } else {
@@ -49,6 +49,7 @@ function playTtsAudio(audioBase64: any) {
 
 export default function useTTS(lang: string, beforeMsgSend: () => void) {
     const [text, setText] = useState('');
+    const [session] = useSession();
 
     useEffect(() => {
         const sentenceEndings = /[.?!]/g;
@@ -58,7 +59,7 @@ export default function useTTS(lang: string, beforeMsgSend: () => void) {
             const buffer = sentences.slice(0, -1).join('.') + text.match(sentenceEndings)?.slice(0, -1).join('');
             let currText = sentences[sentences.length - 1];
             setText(() => currText);
-            sendTtsText(buffer, lang, beforeMsgSend);
+            sendTtsText(buffer, session!, beforeMsgSend);
         }
     }, [beforeMsgSend, lang, text]);
 
@@ -66,7 +67,7 @@ export default function useTTS(lang: string, beforeMsgSend: () => void) {
         text,
         setText,
         sendText: (text: string) => {
-            sendTtsText(text, lang, beforeMsgSend);
+            sendTtsText(text, session!, beforeMsgSend);
         }
     }
 }

@@ -4,10 +4,11 @@ import {createContext, useContext, useEffect, useState} from 'react';
 import {StateSetter} from "@/lib/types";
 import {LocalStoreKey} from "@/lib/data";
 
-interface IUserSession {
+export interface IUserSession {
     lang: string;
     email: string | null;
     user_id: string | null;
+    voice_model: 'male' | 'female';
 }
 
 export type TSessionCtx = IUserSession | null;
@@ -18,7 +19,8 @@ export function SessionProvider({children}: { children: React.ReactNode }) {
     const [session, setSession] = useState<TSessionCtx>({
         lang: "en",
         email: null,
-        user_id: null
+        user_id: null,
+        voice_model: 'male'
     });
 
     function setSessionAndStore(value: IUserSession) {
@@ -35,7 +37,8 @@ export function SessionProvider({children}: { children: React.ReactNode }) {
                 setSessionAndStore({
                     lang: "en",
                     email: null,
-                    user_id: null
+                    user_id: null,
+                    voice_model: 'male'
                 })
                 return;
             }
