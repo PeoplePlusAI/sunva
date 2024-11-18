@@ -3,9 +3,10 @@ from core.tts.bhashini_api import *
 import json
 
 class Ai4BharatTTS:
-    def __init__(self, model_name: str, language: str):
+    def __init__(self, model_name: str, language: str, gender: str):
         self.model_name = model_name
         self.language = language
+        self.gender = gender
         self.TTS = Bhashini()
 
     def speech(self, text: str) -> bytes:
@@ -17,7 +18,9 @@ class Ai4BharatTTS:
         print(ttsServiceId)
         print(text)
 
-        response = self.TTS.textToSpeech(ttsServiceId,text,targetLanguage)
+        response = self.TTS.textToSpeech(
+            ttsServiceId, text, targetLanguage, self.gender
+        )
         print(response)
         #print(response.text)
 
