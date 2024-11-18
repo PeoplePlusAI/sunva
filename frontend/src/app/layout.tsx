@@ -7,7 +7,7 @@ import {SessionProvider} from "@/lib/context/sessionContext";
 
 export const metadata: Metadata = {
     title: "Sunva AI",
-    description: "TODO",
+    description: "Seamless conversation loop for the deaf",
 };
 
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
