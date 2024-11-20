@@ -19,6 +19,9 @@ with open("prompts/decision.txt", "r") as f:
 with open("prompts/correction.txt", "r") as f:
     correction_prompt = f.read()
 
+with open("prompts/quick_type.txt", "r") as f:
+    quick_type_prompt = f.read()
+
 def concise_transcription(transcription: str, language: str) -> str:
     prompt = concise_prompt.format(transcription)
     response = LLM(language).inference(prompt, ProcessedText)
@@ -47,3 +50,8 @@ def process_transcription(transcription: str, language: str) -> str:
         response = highlight_keywords(transcription, language)
         type = "highlight"
     return {"text": response, "type": type} if response else {} 
+
+def enhance_text_input(input_text: str, language: str) -> str:
+    prompt = quick_type_prompt.format(language, input_text)
+    response = LLM(language).inference(prompt, ProcessedText)
+    return response.processed_text 
