@@ -4,6 +4,7 @@ import { SendIcon } from "@/components/Icons";
 import { toast } from "sonner";
 import { StateSetter, TMessage } from "@/lib/types";
 import { useSession } from "@/lib/context/sessionContext";
+import ChooseVoiceModel from "@/components/ChooseVoiceModel";
 
 const TTS_SEND_BTN_ID = "tts-send";
 
@@ -14,6 +15,7 @@ function TTS({
     setMessages: StateSetter<TMessage[]>;
     onClose: () => void;
 }) {
+    const contElmRef = useRef<HTMLDivElement>(null);
     const inputElmRef = useRef<HTMLInputElement>(null);
     const [session] = useSession();
     const lang = session?.lang || "en";
@@ -58,7 +60,8 @@ function TTS({
 
     return (
         <section className="-mb-4">
-            <div className="w-full flex gap-2 px-0 mb-4">
+            <div className="w-full flex gap-2 px-0 mb-4" ref={contElmRef}>
+            <ChooseVoiceModel/>
                 <input
                     type="text"
                     value={text} // Controlled input

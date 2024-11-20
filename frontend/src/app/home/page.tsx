@@ -10,7 +10,7 @@ import {
     TrashIcon,
     UpAndDownArrow
 } from "@/components/Icons";
-import {useState} from "react";
+import {useState, useCallback} from "react";
 import MessagesList from "@/components/MessageList";
 import Link from "next/link";
 import useSunvaAI from "@/lib/hooks/useSunvaAI";
@@ -33,12 +33,14 @@ export default function Home() {
     } = useSunvaAI(session);
     const [isTTSOpen, setIsTTSOpen] = useState(false);
     const [isDelOpen, setIsDelOpen] = useState(false);
-    const ttsClose = () => {
+    const ttsClose = useCallback(() => {
         setIsTTSOpen(false);
-    };
+    }, []);
 
     return <main className="accessibility flex justify-between flex-col w-full h-full px-4 pt-3 pb-4">
-        <div className="w-full h-[40px] flex items-center justify-between">
+        <div className="w-full h-[40px] flex items-center justify-between" onClick={() => {
+            ttsClose();
+        }}>
             <Link href="/home/saved" className="w-[24px]">
                 <NoteIcon/>
             </Link>
@@ -49,7 +51,7 @@ export default function Home() {
                 {isActive}
             </div>
         </div>
-        <MessagesList messages={messages}/>
+        <MessagesList messages={messages} onClick={ttsClose}/>
 
         {isTTSOpen ? <TTS setMessages={setMessages} onClose={ttsClose}/> :
             <div className="px-5 h-[75px] py-1 bg-white shadow flex rounded-3xl gap-7 justify-evenly items-center">
