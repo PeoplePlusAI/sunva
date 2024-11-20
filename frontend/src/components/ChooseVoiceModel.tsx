@@ -10,7 +10,7 @@ export default function ChooseVoiceModel() {
                    onValueChange={(e: 'male' | 'female') => setSession({...session!, voice_model: e})}
     >
         <SelectTrigger className="w-[100px] bg-[#EDEDED]">
-            <SelectValue defaultValue={VOICE_MODEL[0][0].toUpperCase()}/>
+            <SelectValue defaultValue={session?.voice_model || 'male'}/>
         </SelectTrigger>
         <SelectContent>
             {VOICE_MODEL.map((model) => {
