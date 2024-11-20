@@ -4,10 +4,9 @@ from core.tts.ai4bharat_client import Ai4BharatTTS
 from typing import Tuple
 
 class TTS:
-    def __init__(self, model_name: str, language: str, gender: str):
+    def __init__(self, model_name: str, language: str):
         self.model = model_name
         self.language = language
-        self.gender = gender
         self.models = {
             "ai4bharat": [
                 ("ai4bharat-en", "ai4bharat/indic-tts-coqui-misc-gpu--t4"),
@@ -42,7 +41,7 @@ class TTS:
             print(f"Loading model: {model_name}")
             return CoquiTTS(model_name, language=self.language)
         elif model_enum == "ai4bharat":
-            return Ai4BharatTTS(model_name, language=self.language, gender=self.gender)
+            return Ai4BharatTTS(model_name, language=self.language)
         else:
             # Raise an exception if the model is not found
             raise ValueError(f"Model {self.model} not found in the available models")

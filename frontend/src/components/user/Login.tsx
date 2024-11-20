@@ -33,25 +33,25 @@ export default function Login({pageSetter}: { pageSetter: (val: TPages) => void 
                 .then(data => {
                     console.log(router);
 
-                    if (data.detail) {
+                    if(data.detail) {
                         toast.error(data.detail);
                         return;
                     }
 
                     setSession({
-                        email: data.email,
-                        lang: data.language,
-                        user_id: data.user_id
+                        email: data.email as string,
+                        lang: data.language as string,
+                        user_id: data.user_id as string
                     })
-                    setTimeout(() => {
-                        console.log("Done")
-                        router.push("/home");
-                    }, 1000);
-                })
-                .catch(e => {
-                    console.error(e);
-                    toast.error("Couldn't create the account");
-                })
+                        setTimeout(() => {
+                            console.log("Done")
+                            router.push("/home");
+                        }, 1000);
+                    })
+                    .catch(e => {
+                        console.error(e);
+                        toast.error("Couldn't create the account");
+                    })
         }}>
             <div className="unit">
                 <label htmlFor="email" className="block">Email</label>

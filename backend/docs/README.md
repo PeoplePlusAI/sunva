@@ -158,8 +158,7 @@
       {
           "language": "en",
           "user_id": "<uuid>",
-          "text": "Hello, how are you?",
-          "gender": "male"
+          "text": "Hello, how are you?"
       }
       ```
   - **Server to Client**:
