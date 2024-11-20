@@ -8,8 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-	"http://localhost:3000",
-        "https://sunva.pplus.ai"
+	"*"
+    #"http://localhost:3000",  # Allow requests from your Next.js frontend
+    # Add any other origins if needed
 ]
 
 # Add the CORS middleware to the FastAPI application
