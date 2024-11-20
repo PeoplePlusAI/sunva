@@ -135,7 +135,7 @@ class Bhashini:
                                  json=body).json()['pipelineResponse'][0]['output'][0]['source']
         return response
 
-    def textToSpeech(self,ttsServiceId,text,targetLanguage):
+    def textToSpeech(self, ttsServiceId, text, targetLanguage, gender):
         body = {
                 "pipelineTasks": [       
                 {
@@ -145,7 +145,7 @@ class Bhashini:
                             "sourceLanguage": targetLanguage
                         },
                         "serviceId": ttsServiceId,
-                        "gender": "male",
+                        "gender": gender,
                         "samplingRate": 8000
                     }
                 }

@@ -7,22 +7,13 @@ import {SessionProvider} from "@/lib/context/sessionContext";
 
 export const metadata: Metadata = {
     title: "Sunva AI",
-    description: "TODO",
+    description: "Seamless conversation loop for the deaf",
 };
 
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
         <body className={inter.className}>
-
-        <a
-            className="banner right-top"
-            href="https://github.com/PeoplePlusAI/sunva-ai"
-            data-ribbon="Fork Me"
-            title="Made with ❤️ for 🇮🇳 by People+AI"
-        />
-
-
         <SessionProvider>
             {children}
         </SessionProvider>
