@@ -41,7 +41,8 @@ export default function Login({pageSetter}: { pageSetter: (val: TPages) => void 
                     setSession({
                         email: data.email,
                         lang: data.language,
-                        user_id: data.user_id
+                        user_id: data.user_id,
+                        voice_model: data.voice_model
                     })
                     setTimeout(() => {
                         console.log("Done")

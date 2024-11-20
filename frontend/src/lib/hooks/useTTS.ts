@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
+import {IUserSession, useSession} from "@/lib/context/sessionContext";
 
 function sendTtsText(
     ttsSocketRef: React.MutableRefObject<WebSocket | null>,
     text: string,
-    lang: string,
+    session: IUserSession,
     beforeMsgSend: () => void,
     onMessageReceived: (response: any) => void
 ) {
@@ -17,7 +18,8 @@ function sendTtsText(
             ttsSocketRef.current!.send(
                 JSON.stringify({
                     text,
-                    language: lang,
+                    language: session.lang,
+                    gender: session.voice_model
                 })
             );
         };
@@ -26,7 +28,8 @@ function sendTtsText(
         ttsSocketRef.current.send(
             JSON.stringify({
                 text,
-                language: lang,
+                language: session.lang,
+                gender: session.voice_model
             })
         );
     }
@@ -73,6 +76,7 @@ export default function useTTS(
     onMessageReceived: (message: any) => void
 ) {
     const [text, setText] = useState<string>("");
+    const [session] = useSession();
     const ttsSocketRef = useRef<WebSocket | null>(null); // Persist WebSocket across renders
 
     // Effect to process sentences and send them via TTS
@@ -88,7 +92,7 @@ export default function useTTS(
 
             let currText = sentences[sentences.length - 1];
             setText(() => currText); // Set the remaining sentence as the text state
-            sendTtsText(ttsSocketRef, buffer, lang, beforeMsgSend, onMessageReceived); // Send the buffered text
+            sendTtsText(ttsSocketRef, buffer, session!, beforeMsgSend, onMessageReceived);// Send the buffered text
         }
     }, [beforeMsgSend, lang, text]);
 
@@ -97,7 +101,7 @@ export default function useTTS(
         text,
         setText,
         sendText: (inputText: string) => {
-            sendTtsText(ttsSocketRef, inputText, lang, beforeMsgSend, onMessageReceived); // Send full input text
+            sendTtsText(ttsSocketRef, inputText, session!, beforeMsgSend, onMessageReceived); // Send full input text
         },
     };
 }
