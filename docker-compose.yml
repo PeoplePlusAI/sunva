@@ -1,0 +1,16 @@
+services:
+  sunva-backend:
+    build: ./backend
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./backend/ops/.env:/apps/sunva-backend/ops/.env
+      - ./backend/data:/apps/sunva-backend/data sunva-backend
+    restart: unless-stopped
+  sunva-frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend/.env.local:/apps/sunva-frontend/.env.local
+    restart: unless-stopped 
