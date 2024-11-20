@@ -6,7 +6,7 @@ export type TMessage = {
     name: string;
     message: string;
     modified?: string;
-    type?: "concise" | "highlight";
+    type?: "concise" | "highlight" | "tts";
     id: string
 }
 
