@@ -7,7 +7,8 @@ const LOGIN_ROUTE = '/?page=login';
 // This function can be marked `async` if using `await` inside
 export async function middleware(req: NextRequest) {
     const token = req.cookies.get('access_token');
-
+    console.log("printing token");
+    console.log(token);
     if (!token) {
         return NextResponse.redirect(new URL(LOGIN_ROUTE, req.url));
     }
@@ -32,5 +33,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
     // Only run this middleware when the following paths are encountered
-    matcher: ['/home', '/settings'],
+    matcher: ['/settings'],
 }
