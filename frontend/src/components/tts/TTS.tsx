@@ -76,13 +76,6 @@ function TTS({
                             sendTextAndClear();
                         }
                     }}
-                    onBlur={(e) => {
-                        if (e.relatedTarget && e.relatedTarget.id === TTS_SEND_BTN_ID) {
-                            e.target.focus(); // Keep focus if clicking the send button
-                            return;
-                        }
-                        onClose(); // Close input if focus is lost
-                    }}
                     className="px-2 rounded-lg box-shadow flex-1 border-brand-secondary border-[1px] resize-none"
                     ref={inputElmRef} // Ref for focusing input
                 />
