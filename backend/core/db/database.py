@@ -45,20 +45,18 @@ async def init_db(retry_attempts=10):
     while attempt < retry_attempts:
         try:
             async with engine.begin() as conn:
-                # Optionally drop all tables for a fresh start
-                await conn.run_sync(SQLModel.metadata.drop_all)
-                # Create all tables
+                # Create tables only if they don't exist
                 await conn.run_sync(SQLModel.metadata.create_all)
             print("Database initialization successful.")
             break
-        except (DuplicatePreparedStatementError, SQLAlchemyError) as e:  # Catch specific exceptions
+        except (DuplicatePreparedStatementError, SQLAlchemyError) as e:
             print(f"Database initialization failed due to {type(e).__name__}: {e}. Retrying in {retry_delay} seconds...")
             attempt += 1
             if attempt < retry_attempts:
-                time.sleep(retry_delay)  # Delay before the next retry
+                time.sleep(retry_delay)
             else:
                 print("Max retries reached. Exiting...")
-                raise  # Re-raise after max retries
+                raise
 
 # Dependency to get a session
 async def get_session() -> AsyncSession:
