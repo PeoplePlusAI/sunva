@@ -1,3 +1,7 @@
+<p align="center">
+  <img src='./static/logo.png' width="400" height="400" style="object-fit: contain; margin-left:auto; margin-right:auto;">
+</p>
+
 # SUNVA AI: Seamless conversation loop for the deaf
 
 ## Table of Contents
