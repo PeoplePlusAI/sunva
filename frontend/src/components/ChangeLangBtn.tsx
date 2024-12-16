@@ -11,7 +11,7 @@ export default function ChangeLangBtn() {
                    onValueChange={(e) => setSession({...session!, lang: e})}
     >
         <SelectTrigger className="w-fit bg-[#EDEDED] px-4 py-1 ml-[50px]">
-            <SelectValue placeholder="en" defaultValue="en" className="bg-red-500"/>
+            <SelectValue placeholder={langDict['en']} defaultValue="en" className="bg-red-500"/>
         </SelectTrigger>
         <SelectContent>
             {langList.map((langCode) => {

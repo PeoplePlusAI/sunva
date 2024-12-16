@@ -5,6 +5,7 @@ import {SendIcon} from "@/components/Icons";
 import {toast} from "sonner";
 import {StateSetter, TMessage} from "@/lib/types";
 import {useSession} from "@/lib/context/sessionContext";
+import ChooseVoiceModel from "@/components/ChooseVoiceModel";
 
 const TTS_SEND_BTN_ID = "tts-send";
 
@@ -12,6 +13,7 @@ function TTS({setMessages, onClose}: {
     setMessages: StateSetter<TMessage[]>,
     onClose: () => void,
 },) {
+    const contElmRef = useRef<HTMLDivElement>(null);
     const inputElmRef = useRef<HTMLInputElement>(null);
     const [session] = useSession();
     const lang = session?.lang || "en";
@@ -36,7 +38,9 @@ function TTS({setMessages, onClose}: {
     }
 
     return <section className="-mb-4">
-        <div className="w-full flex gap-2 px-0 mb-4">
+        <div className="w-full flex gap-2 px-0 mb-4" ref={contElmRef}>
+            <ChooseVoiceModel/>
+
             <input type="text" value={text} placeholder="Type something" onChange={(e) => {
                 setText(e.target.value);
             }}
@@ -47,15 +51,6 @@ function TTS({setMessages, onClose}: {
                        if (e.key === "Enter" && text) {
                            sendTextAndClear();
                        }
-                   }}
-                   onBlur={(e) => {
-                       // If the event happened due to the send button, do nothing;
-                       if (e.relatedTarget && e.relatedTarget.id === TTS_SEND_BTN_ID) {
-                           e.target.focus();
-                           return;
-                       }
-
-                       onClose();
                    }}
                    className="px-2 rounded-lg box-shadow flex-1 border-brand-secondary border-[1px] resize-none"
                    ref={inputElmRef}

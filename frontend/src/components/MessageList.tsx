@@ -35,15 +35,17 @@ function Message({item}: { item: TMessage }) {
 }
 
 
-function MessagesList({messages}: { messages: TMessage[] }) {
+function MessagesList({messages, onClick}: { messages: TMessage[], onClick: () => void }) {
     const section = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         section.current?.scrollTo(0, section.current.scrollHeight);
     }, [messages]);
 
-    return <div ref={section}
-                className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5"
+    return <div
+        onClick={onClick}
+        ref={section}
+        className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5"
     >
         {
             messages.length === 0 ? <p className="text-center opacity-30 text-2xl mt-40">Start a conversation</p> :
