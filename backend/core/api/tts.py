@@ -4,6 +4,7 @@ from fastapi import (
     APIRouter,
     Depends
 )
+from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 from core.models.tts import TTSResponse
 from core.ai.speech import text_to_speech
 from core.utils.speech_utils import encode_wav_to_base64
