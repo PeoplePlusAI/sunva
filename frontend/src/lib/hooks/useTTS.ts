@@ -1,72 +1,107 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState, useRef } from "react";
+import {IUserSession, useSession} from "@/lib/context/sessionContext";
 
-function sendTtsText(text: string, lang: string, beforeMsgSend: () => void) {
+function sendTtsText(
+    ttsSocketRef: React.MutableRefObject<WebSocket | null>,
+    text: string,
+    session: IUserSession,
+    beforeMsgSend: () => void,
+    onMessageReceived: (response: any) => void
+) {
     beforeMsgSend();
-    let ttsSocket: WebSocket;
 
-    console.log(process.env.NEXT_PUBLIC_WS_BACKEND);
-
-    // @ts-ignore
-    if (!ttsSocket || ttsSocket.readyState !== WebSocket.OPEN) {
-        ttsSocket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_BACKEND}/v1/ws/speech`);
-        ttsSocket.onopen = () => {
+    if (!ttsSocketRef.current || ttsSocketRef.current.readyState !== WebSocket.OPEN) {
+        // Initialize WebSocket if it doesn't exist or is closed
+        ttsSocketRef.current = new WebSocket(`${process.env.NEXT_PUBLIC_WS_BACKEND}/v1/ws/speech`);
+        ttsSocketRef.current.onopen = () => {
             console.log("TTS WebSocket connected");
-            ttsSocket.send(JSON.stringify({
-                text,
-                language: lang
-            }));
+            ttsSocketRef.current!.send(
+                JSON.stringify({
+                    text,
+                    language: session.lang,
+                    gender: session.voice_model
+                })
+            );
         };
     } else {
-        ttsSocket.send(text);
+        // Send the text directly if the WebSocket is already open
+        ttsSocketRef.current.send(
+            JSON.stringify({
+                text,
+                language: session.lang,
+                gender: session.voice_model
+            })
+        );
     }
 
-    ttsSocket.onmessage = (event) => {
+    // Handle incoming messages
+    ttsSocketRef.current.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        console.log(message);
+        console.log("Received message from WebSocket:", message);
+
+        // Play audio if available
         if (message.audio) {
             console.log("Received TTS audio data");
             playTtsAudio(message.audio);
         }
+
+        // Pass the message data back to the callback for handling
+        onMessageReceived(message);
     };
 
-    ttsSocket.onclose = () => {
+    // Handle WebSocket closure
+    ttsSocketRef.current.onclose = () => {
         console.log("TTS WebSocket disconnected");
     };
 }
 
-function playTtsAudio(audioBase64: any) {
-    const audioBytes = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0));
+function playTtsAudio(audioBase64: string) {
+    const audioBytes = Uint8Array.from(atob(audioBase64), (c) => c.charCodeAt(0));
     const audioContext = new AudioContext();
-    audioContext.decodeAudioData(audioBytes.buffer, buffer => {
+
+    // Decode and play the audio
+    audioContext.decodeAudioData(audioBytes.buffer, (buffer) => {
         const source = audioContext.createBufferSource();
         source.buffer = buffer;
         source.connect(audioContext.destination);
         source.start();
     });
 
-    console.log("Reached here");
+    console.log("Audio playback started");
 }
 
-export default function useTTS(lang: string, beforeMsgSend: () => void) {
-    const [text, setText] = useState('');
+export default function useTTS(
+    lang: string,
+    beforeMsgSend: () => void,
+    onMessageReceived: (message: any) => void
+) {
+    const [text, setText] = useState<string>("");
+    const [session] = useSession();
+    const ttsSocketRef = useRef<WebSocket | null>(null); // Persist WebSocket across renders
 
+    // Effect to process sentences and send them via TTS
     useEffect(() => {
         const sentenceEndings = /[.?!]/g;
         const sentences = text.split(sentenceEndings);
 
         if (sentences.length > 1) {
-            const buffer = sentences.slice(0, -1).join('.') + text.match(sentenceEndings)?.slice(0, -1).join('');
+            // Send everything except the last sentence
+            const buffer =
+                sentences.slice(0, -1).join(".") +
+                text.match(sentenceEndings)?.slice(0, -1).join("");
+
             let currText = sentences[sentences.length - 1];
-            setText(() => currText);
-            sendTtsText(buffer, lang, beforeMsgSend);
+            setText(() => currText); // Set the remaining sentence as the text state
+            sendTtsText(ttsSocketRef, buffer, session!, beforeMsgSend, onMessageReceived);// Send the buffered text
         }
     }, [beforeMsgSend, lang, text]);
 
+    // Return functions and state for controlling the TTS feature
     return {
         text,
         setText,
-        sendText: (text: string) => {
-            sendTtsText(text, lang, beforeMsgSend);
-        }
-    }
+        sendText: (inputText: string) => {
+            sendTtsText(ttsSocketRef, inputText, session!, beforeMsgSend, onMessageReceived); // Send full input text
+        },
+    };
 }
