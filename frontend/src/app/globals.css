@@ -75,7 +75,7 @@ body {
 }
 
 .btn-primary {
-    @apply bg-brand-main rounded-lg h-[40px] text-white;
+    @apply rounded-lg h-[40px] text-white;
 }
 
 :root {
@@ -162,4 +162,11 @@ body {
     border-style: dotted;
     border-color: #fff;
     border-color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-bg {
+    background-color: #e5e5f7;
+    opacity: 0.8;
+    background-image: linear-gradient(#c1dbcd 1px, transparent 1px), linear-gradient(to right, #c1dbcd 1px, #e5e5f7 1px);
+    background-size: 20px 20px;
 }

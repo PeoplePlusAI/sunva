@@ -4,7 +4,7 @@
 }
 
 .login-form .unit label {
-    @apply font-semibold mb-1;
+    @apply mb-1;
 }
 
 .login-form .unit input {
