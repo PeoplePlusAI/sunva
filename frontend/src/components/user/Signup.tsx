@@ -4,6 +4,7 @@ import {toast} from "sonner";
 import {TPages} from "@/lib/types";
 import {PasswordInput} from "@/components/PasswordInput";
 import {useRouter} from "next/navigation";
+import {Loader} from "lucide-react";
 
 
 export default function Signup({pageSetter}: { pageSetter: (val: TPages) => void }) {
@@ -11,44 +12,52 @@ export default function Signup({pageSetter}: { pageSetter: (val: TPages) => void
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
 
     return <section className="auth-bg w-full h-full flex items-center justify-center px-8">
 
-        <form className="flex flex-col items-center justify-center login-form gap-4 w-full" onSubmit={(e) => {
-            e.preventDefault();
-            if (password != confirmPassword) {
-                toast.warning("Passwords don't match");
-                return;
-            }
+        <form className="flex flex-col items-center justify-center login-form gap-4 w-full"
+              onSubmit={(e) => {
+                  e.preventDefault();
+                  if (password != confirmPassword) {
+                      toast.warning("Passwords don't match");
+                      return;
+                  }
 
-            fetch(`${process.env.NEXT_PUBLIC_BACKEND}/user/register`, {
-                method: 'POST',
-                headers: {'Content-Type': ''},
-                body: JSON.stringify({
-                    "email": email,
-                    "password": password,
-                    "language": "en"
-                })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    console.log("Return data:", data);
+                  setLoading(true);
+                  fetch(`${process.env.NEXT_PUBLIC_BACKEND}/user/register`, {
+                      method: 'POST',
+                      headers: {'Content-Type': ''},
+                      body: JSON.stringify({
+                          "email": email,
+                          "password": password,
+                          "language": "en"
+                      })
+                  })
+                      .then(res => res.json())
+                      .then(data => {
+                          console.log("Return data:", data);
 
-                    if (data.detail) {
-                        toast.error(data.detail);
-                        return;
-                    }
-                    try {
-                        router.push("?page=login");
-                    } catch (e) {
-                    }
-                })
-                .catch(e => {
-                    console.error("ERROR:", e);
-                    toast.error("Couldn't create the account");
-                });
-        }}>
+                          if (data.detail) {
+                              toast.error(data.detail);
+                              return;
+                          }
+                          try {
+                              router.push("?page=login");
+                          } catch (e) {
+                          }
+                      })
+                      .catch(e => {
+                          console.error("ERROR:", e);
+                          toast.error("Couldn't create the account");
+                      })
+                      .finally(() => {
+                          setLoading(false);
+                      });
+              }
+              }
+        >
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[400px]">
                 <div className="w-full text-center flex items-center justify-center mb-7">
                     <img src="/logo.png" className="h-[80px]" alt="Sunva Logo - People+ai; An EkStep initiative"
@@ -73,8 +82,11 @@ export default function Signup({pageSetter}: { pageSetter: (val: TPages) => void
                                    placeholder="Retype password"/>
                 </div>
                 <div className="w-full text-center">
-                    <button type="submit" className="mx-auto mt-5 btn-primary bg-[#468ca0] px-10"
+                    <button
+                        type="submit" className="mx-auto mt-5 btn-primary bg-[#468ca0] px-10"
+                        disabled={loading}
                     >
+                        {loading && <Loader className="animate-spin "/>}
                         Signup
                     </button>
                 </div>

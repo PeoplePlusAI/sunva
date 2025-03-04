@@ -32,5 +32,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
     // Only run this middleware when the following paths are encountered
-    matcher: ['/home', '/settings'],
+    matcher: [],
 }

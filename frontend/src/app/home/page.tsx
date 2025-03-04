@@ -10,7 +10,7 @@ import {
     TrashIcon,
     UpAndDownArrow
 } from "@/components/Icons";
-import {useState, useCallback} from "react";
+import {useCallback, useState} from "react";
 import MessagesList from "@/components/MessageList";
 import Link from "next/link";
 import useSunvaAI from "@/lib/hooks/useSunvaAI";
@@ -41,14 +41,20 @@ export default function Home() {
         <div className="w-full h-[40px] flex items-center justify-between" onClick={() => {
             ttsClose();
         }}>
-            <Link href="/home/saved" className="w-[24px]">
-                <NoteIcon/>
-            </Link>
-            <ChangeLangBtn/>
-            <div
-                className="w-[90px] flex items-center justify-center gap-2 rounded-full border-[1px] border-[#e6e6e6] px-2 text-sm text-black text-opacity-60">
-                <div className={`status-indicator ${isActive}`}></div>
-                {isActive}
+            <div className="text-center flex items-center justify-center mt-2">
+                <img src="/logo.png" className="h-[40px]" alt="Sunva Logo - People+ai; An EkStep initiative"
+                     draggable={false}/>
+            </div>
+            <div className="flex items-center gap-6">
+                <Link href="/home/saved" className="w-[24px]">
+                    <NoteIcon/>
+                </Link>
+                <ChangeLangBtn/>
+                <div
+                    className="w-[90px] flex items-center justify-center gap-2 rounded-full border-[1px] border-[#e6e6e6] px-2 text-sm text-black text-opacity-60">
+                    <div className={`status-indicator ${isActive}`}></div>
+                    {isActive}
+                </div>
             </div>
         </div>
         <MessagesList messages={messages} onClick={ttsClose}/>
