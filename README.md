@@ -1,3 +1,7 @@
+<p align="center">
+  <img src='./static/logo.png' width="400" height="400" style="object-fit: contain; margin-left:auto; margin-right:auto;">
+</p>
+
 # SUNVA AI: Seamless conversation loop for the deaf
 
 ## Table of Contents
@@ -66,7 +70,9 @@ Provide instructions for reporting issues:
 
 If you encounter any issues with the project, please create a new issue using the [issue template](.github/ISSUE_TEMPLATE.md). Provide as much detail as possible to help us understand and resolve the issue.
 
+## Credits
 
+Logo design by [Asif Hassan](https://github.com/theonlysif) 🎨
 
 ## Volunteer & contribute
 

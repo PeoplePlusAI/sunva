@@ -71,4 +71,3 @@ def should_process_paragraph(transcription: str, language: str, word_count: int,
         if detect_proper_paragraph(transcription, language):
             return True
     return False
-    
