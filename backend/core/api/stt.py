@@ -21,7 +21,7 @@ from core.models.db import TranscriptionDB
 from core.db.database import get_session
 from core.utils.executor_utils import executor
 from core.ai.speech import speech_to_text
-from core.ai.text import process_transcription
+from core.ai.text import process_transcription, should_process_paragraph, detect_proper_paragraph
 from core.db.redis_client import redis_client
 import traceback
 import asyncio
@@ -62,6 +62,7 @@ async def websocket_transcribe_and_process(websocket: WebSocket):
     audio_buffer = io.BytesIO()
     WORD_THRESHOLD = 30
     message_id = None
+    para_detected = False
 
     try:
         while True:
@@ -138,6 +139,14 @@ async def websocket_transcribe_and_process(websocket: WebSocket):
                     )
 
                     if word_count >= WORD_THRESHOLD:
+                       para_detected = await asyncio.get_event_loop().run_in_executor(
+                            executor,
+                            detect_proper_paragraph,
+                            processing_candidate.strip(),
+                            selected_language
+                          ) 
+
+                    if para_detected:
                         processed_result = await asyncio.get_event_loop().run_in_executor(
                             executor, 
                             process_transcription, 

@@ -22,6 +22,9 @@ with open("prompts/correction.txt", "r") as f:
 with open("prompts/quick_type.txt", "r") as f:
     quick_type_prompt = f.read()
 
+with open("prompts/paragraph.txt", "r") as f:
+    paragraph_prompt = f.read()
+
 def concise_transcription(transcription: str, language: str) -> str:
     prompt = concise_prompt.format(transcription)
     response = LLM(language).inference(prompt, ProcessedText)
@@ -42,6 +45,12 @@ def correct_transcription(transcription: str, base_model: str) -> str:
     response = LLM(base_model).inference(prompt, ProcessedText)
     return response.processed_text
 
+def detect_proper_paragraph(transcription: str, language: str) -> str:
+    prompt = paragraph_prompt.format(transcription)
+    response = LLM(language).inference(prompt, ProcessingDecision)
+    print("Decision:", response.decision)
+    return response.decision
+
 def process_transcription(transcription: str, language: str) -> str:
     if should_summarize(transcription, language):
         response = concise_transcription(transcription, language)
@@ -54,4 +63,11 @@ def process_transcription(transcription: str, language: str) -> str:
 def enhance_text_input(input_text: str, language: str) -> str:
     prompt = quick_type_prompt.format(language, input_text)
     response = LLM(language).inference(prompt, ProcessedText)
-    return response.processed_text 
+    return response.processed_text
+
+
+def should_process_paragraph(transcription: str, language: str, word_count: int, threshold: int = 30) -> bool:
+    if word_count >= threshold:
+        if detect_proper_paragraph(transcription, language):
+            return True
+    return False
