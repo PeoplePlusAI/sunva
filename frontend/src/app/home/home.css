@@ -83,11 +83,11 @@
     white-space: normal; /* allows wrapping of text */
 }
 
-.summarize , .highlight {
+.summarize, .highlight {
     position: relative;
 }
 
-.summarize::after , .highlight::after {
+.summarize::after, .highlight::after {
     content: 'Summarized';
     position: absolute;
     top: 0;
@@ -111,21 +111,17 @@
 
 
 .status-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
+    /*width: 10px;*/
+    /*height: 10px;*/
+    /*border-radius: 100%;*/
 }
 
 .status-indicator.active {
-    background: #37CC1A;
-    background: radial-gradient(at center, #37CC1A, #12a800);
-    box-shadow: 1px 0 3px #37CC1A, -1px 0 3px #37CC1A;
+    border: 3px solid #37CC1A;
 }
 
 .status-indicator.inactive {
-    background: #F60101;
-    background: radial-gradient(at center, #F60101, #A10101);
-    box-shadow: 1px 0 3px #A10101, -1px 0 3px #A10101;
+    border: 3px solid #F60101;
 }
 
 .window {

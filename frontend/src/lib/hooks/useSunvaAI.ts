@@ -188,6 +188,22 @@ export default function useSunvaAI(session: TSessionCtx) {
     const [isActive, setIsActive] = useState<TServerStates>("active");
     const [isRecording, setIsRecording] = useState(false);
     const [messages, setMessages] = useState<TMessage[]>([]);
+    /*
+    [
+        {
+            "name": "Person 1",
+            "message": "This is a test message for testing purpose",
+            "id": "c287deef-b48c-4cd0-9242-9588c459696b",
+            "modified": "This is a test message",
+            "type": "concise"
+        },
+        {
+            "name": "Person 1",
+            "message": " We will be able to do it in the next batch.  What do you need?  bye",
+            "id": "04911c62-855d-4b83-9763-0c05abb5b1ea"
+        }
+    ]
+     */
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_BACKEND}/is-alive`, {

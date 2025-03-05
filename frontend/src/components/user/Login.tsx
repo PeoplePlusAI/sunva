@@ -64,7 +64,7 @@ export default function Login({pageSetter}: { pageSetter: (val: TPages) => void 
         >
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[400px]">
                 <div className="w-full text-center flex items-center justify-center mb-7">
-                    <img src="/logo.png" className="h-[80px]" alt="Sunva Logo - People+ai; An EkStep initiative"
+                    <img src="/people+ai.webp" className="h-[80px]" alt="Sunva Logo"
                          draggable={false}/>
                 </div>
                 <div className="unit mb-4">
@@ -79,9 +79,10 @@ export default function Login({pageSetter}: { pageSetter: (val: TPages) => void 
                     <label htmlFor="password" className="text-gray-500">Password</label>
                     <PasswordInput password={password} placeholder="your password" setPassword={setPassword}/>
                 </div>
-                <div className="w-full text-center mt-3">
+                <div className="w-full text-center mt-6">
+                    <p className="mb-3 text-sm text-black text-opacity-70">Login to <span className="text-[#82b69a]">Sunva</span></p>
                     <button type="submit"
-                            className="flex items-center justify-center gap-3 mx-auto mt-5 btn-primary bg-[#468ca0] px-10"
+                            className="flex items-center justify-center gap-3 mx-auto  btn-primary bg-[#468ca0] px-10"
                             disabled={loading}>
                         {loading && <Loader className="animate-spin "/>}
                         Login
@@ -89,7 +90,7 @@ export default function Login({pageSetter}: { pageSetter: (val: TPages) => void 
                 </div>
                 <p className="text-sm absolute left-0 bottom-10 text-center w-full">
                     Don&apos;t have an account?
-                    <button className="text-blue-600 underline ml-1" onClick={(e) => {
+                    <button type="button" className="text-blue-600 underline ml-1" onClick={(e) => {
                         e.preventDefault();
                         pageSetter("signup");
                     }}>

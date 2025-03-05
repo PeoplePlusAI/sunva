@@ -1,12 +1,12 @@
-import { TMessage } from "@/lib/types";
-import { memo, useEffect, useRef, useState } from "react";
+import {TMessage} from "@/lib/types";
+import {memo, useEffect, useRef, useState} from "react";
 
-function Message({ item }: { item: TMessage }) {
+function Message({item}: { item: TMessage }) {
     const [showOriginal, setShowOriginal] = useState(true);
 
     useEffect(() => {
         if (item.modified) {
-            setShowOriginal(false); // Default to show modified if available
+            setShowOriginal(false);
         }
     }, [item.modified]);
 
@@ -50,17 +50,32 @@ function MessagesList({messages, onClick}: { messages: TMessage[], onClick: () =
 
     return (
         <div
-        onClick={onClick}
-        ref={section}
-        className="w-full flex-1 rounded-lg pt-2 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5">
+            onClick={onClick}
+            ref={section}
+            className="w-full flex-1 rounded-lg pt-3 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5">
             {messages.length === 0 ? (
                 <p className="text-center opacity-30 text-2xl mt-40">Start a conversation</p>
             ) : (
-                <>
-                    {messages.map((item, i) => (
-                        <Message item={item} key={i} />
-                    ))}
-                </>
+                <div className="flex w-full h-full gap-4">
+                    <div className="flex-1 space-y-6 border-2 overflow-y-auto h-full rounded-lg p-4">
+                        {messages.map((item, i) => (
+                            <Message item={item} key={i}/>
+                        ))}
+                    </div>
+                    <div className="max-md:hidden flex-1 space-y-2 border-2 overflow-y-auto h-full rounded-lg p-4">
+                        <h1 className="text-xl text-[#1db7f5]">Original Text</h1>
+                        <div className="">
+                            {messages.map((item, i) =>
+                                <span
+                                    className="pt-2"
+                                    key={i}
+                                >
+                                    {item.message}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

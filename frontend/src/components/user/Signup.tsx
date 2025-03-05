@@ -60,7 +60,7 @@ export default function Signup({pageSetter}: { pageSetter: (val: TPages) => void
         >
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[400px]">
                 <div className="w-full text-center flex items-center justify-center mb-7">
-                    <img src="/logo.png" className="h-[80px]" alt="Sunva Logo - People+ai; An EkStep initiative"
+                    <img src="/people+ai.webp" className="h-[80px]" alt="Sunva Logo - People+ai; An EkStep initiative"
                          draggable={false}/>
                 </div>
 
