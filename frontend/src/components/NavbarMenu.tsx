@@ -16,6 +16,7 @@ import {Languages, LogOut, Settings, UserRound} from "lucide-react";
 import {useSession} from "@/lib/context/sessionContext";
 import useLangAvail from "@/lib/hooks/useLangAvail";
 import {langDict} from "@/lib/lang";
+import Link from "next/link";
 
 export default function NavbarMenu() {
     const [session, setSession] = useSession();
@@ -54,8 +55,10 @@ export default function NavbarMenu() {
                 </DropdownMenuPortal>
             </DropdownMenuSub>
             <DropdownMenuItem>
-                <Settings/>
-                Settings
+                <Link className="flex gap-2 items-center" href="/settings">
+                    <Settings/>
+                    Settings
+                </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="text-red-500">
                 <LogOut/>

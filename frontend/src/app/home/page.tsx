@@ -1,7 +1,7 @@
 "use client";
 
 import "./home.css"
-import {KeyboardIcon, MicroPhoneIcon, SettingsIcon, StopIcon, TrashIcon, UpAndDownArrow} from "@/components/Icons";
+import {KeyboardIcon, MicroPhoneIcon, StopIcon, TrashIcon, UpAndDownArrow} from "@/components/Icons";
 import {useCallback, useState} from "react";
 import MessagesList from "@/components/MessageList";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import useSunvaAI from "@/lib/hooks/useSunvaAI";
 import TTS from "@/components/tts/TTS";
 import {useSession} from "@/lib/context/sessionContext";
 import {SaveAndDeletePrompts} from "@/components/SaveAndDeletePrompts";
-import {History} from "lucide-react";
+import {AlignHorizontalJustifyCenter, AlignHorizontalSpaceAround, History} from "lucide-react";
 import NavbarMenu from "@/components/NavbarMenu";
 
 
@@ -29,6 +29,7 @@ export default function Home() {
     const ttsClose = useCallback(() => {
         setIsTTSOpen(false);
     }, []);
+    const [splitOpen, setSplitOpen] = useState(false);
 
     return <main className="accessibility flex justify-between flex-col w-full h-full px-4 pt-3 pb-4">
         <div className="w-full h-[40px] flex items-center justify-between mt-2" onClick={() => {
@@ -49,13 +50,13 @@ export default function Home() {
             </div>
         </div>
 
-        <MessagesList messages={messages} onClick={ttsClose}/>
+        <MessagesList messages={messages} onClick={ttsClose} splitOpen={splitOpen}/>
 
         {isTTSOpen ? <TTS setMessages={setMessages} onClose={ttsClose}/> :
             <div className="px-5 h-[75px] py-1 bg-white shadow flex rounded-3xl gap-7 justify-evenly items-center">
-                <Link href="/settings">
-                    <SettingsIcon/>
-                </Link>
+                <button onClick={() => setSplitOpen(p => !p)}>
+                    {splitOpen ? <AlignHorizontalSpaceAround /> : <AlignHorizontalJustifyCenter />}
+                </button>
                 <button onClick={() => setIsDelOpen(true)}><TrashIcon/></button>
                 <button
                     className={`h-[65%] aspect-square rounded-full flex items-center justify-center record-btn ${isRecording ? 'recording' : ''}`}

@@ -41,7 +41,11 @@ function Message({item}: { item: TMessage }) {
     );
 }
 
-function MessagesList({messages, onClick}: { messages: TMessage[], onClick: () => void }) {
+function MessagesList({messages, onClick, splitOpen}: {
+    messages: TMessage[],
+    onClick: () => void,
+    splitOpen: boolean
+}) {
     const section = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -53,30 +57,39 @@ function MessagesList({messages, onClick}: { messages: TMessage[], onClick: () =
             onClick={onClick}
             ref={section}
             className="w-full flex-1 rounded-lg pt-3 gap-2 overflow-y-scroll hide-scrollbar space-y-4 pb-5">
-            {messages.length === 0 ? (
-                <p className="text-center opacity-30 text-2xl mt-40">Start a conversation</p>
-            ) : (
-                <div className="flex w-full h-full gap-4">
-                    <div className="flex-1 space-y-6 border-2 overflow-y-auto h-full rounded-lg p-4">
-                        {messages.map((item, i) => (
+
+            <div className="flex w-full h-full gap-4">
+                <div className="flex-1 space-y-6 border-2 overflow-y-auto h-full rounded-lg p-4">
+                    {messages.length === 0 ? (
+                            <p className="text-center opacity-30 text-2xl mt-40">Start a conversation</p>
+                        ) :
+                        messages.map((item, i) => (
                             <Message item={item} key={i}/>
-                        ))}
-                    </div>
+                        ))
+                    }
+                </div>
+                {splitOpen &&
                     <div className="max-md:hidden flex-1 space-y-2 border-2 overflow-y-auto h-full rounded-lg p-4">
                         <h1 className="text-xl text-[#1db7f5]">Original Text</h1>
-                        <div className="">
-                            {messages.map((item, i) =>
-                                <span
-                                    className="pt-2"
-                                    key={i}
-                                >
+                        {messages.length === 0 ? (
+                                <p className="text-center opacity-30 pt-5">
+                                    Press record and speak to start a conversation
+                                </p>
+                            ) :
+                            <div>
+                                {messages.map((item, i) =>
+                                        <span
+                                            className="pt-2"
+                                            key={i}
+                                        >
                                     {item.message}
                                 </span>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        }
                     </div>
-                </div>
-            )}
+                }
+            </div>
         </div>
     );
 }
