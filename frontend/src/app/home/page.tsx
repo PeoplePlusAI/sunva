@@ -1,7 +1,7 @@
 "use client";
 
 import "./home.css"
-import {KeyboardIcon, MicroPhoneIcon, StopIcon, TrashIcon, UpAndDownArrow} from "@/components/Icons";
+import {KeyboardIcon, MicroPhoneIcon, SettingsIcon, StopIcon, TrashIcon, UpAndDownArrow} from "@/components/Icons";
 import {useCallback, useState} from "react";
 import MessagesList from "@/components/MessageList";
 import Link from "next/link";
@@ -54,7 +54,8 @@ export default function Home() {
 
         {isTTSOpen ? <TTS setMessages={setMessages} onClose={ttsClose}/> :
             <div className="px-5 h-[75px] py-1 bg-white shadow flex rounded-3xl gap-7 justify-evenly items-center">
-                <button onClick={() => setSplitOpen(p => !p)}>
+                <Link href="/settings" className="max-md:inline hidden"><SettingsIcon/></Link>
+                <button  className="max-md:hidden" onClick={() => setSplitOpen(p => !p)}>
                     {splitOpen ? <AlignHorizontalSpaceAround /> : <AlignHorizontalJustifyCenter />}
                 </button>
                 <button onClick={() => setIsDelOpen(true)}><TrashIcon/></button>
