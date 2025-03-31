@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Transcription and Processing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .columns {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .column {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .buttons {
+            text-align: center;
+            margin: 10px 0;
+        }
+        button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .tts-section {
+            padding: 20px;
+        }
+        .tts-input {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .language-select {
+            margin: 10px 0;
+            text-align: center;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+    <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+</head>
+<body>
+    <div class="buttons">
+        <button id="start-button">Start Transcription</button>
+        <button id="stop-button" style="display:none;">Stop Transcription</button>
+    </div>
+    <div class="language-select">
+        <label for="language-select">Select Language: </label>
+        <select id="language-select">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="kn">Kannada</option>
+            <option value="ml">Malayalam</option>
+        </select>
+    </div>
+    <div class="columns">
+        <div class="column">
+            <h2>Transcription</h2>
+            <pre id="transcription"></pre>
+        </div>
+    </div>
+    <div class="tts-section">
+        <h2>Text-to-Speech</h2>
+        <textarea id="text-input" class="tts-input" placeholder="Type here..."></textarea>
+    </div>
+
+    <script>
+        let transcribeAndProcessSocket;
+        let recorder;
+        const audioQueue = [];
+        let isSending = false;
+        const transcriptionMap = {};
+        const userId = generateUserId();  // Generate a random user ID
+
+        function generateUserId() {
+            return 'user-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        console.log("Generated User ID:", userId);
+
+        // Fetch available languages from the server
+        async function fetchLanguages() {
+            try {
+                const response = await fetch("http://localhost:8000/v1/languages");
+                const data = await response.json();
+                const languageSelect = document.getElementById("language-select");
+                languageSelect.innerHTML = '';
+                data.languages.forEach(language => {
+                    const option = document.createElement("option");
+			option.value = language;
+			let languageName;
+			if (language === "en") {
+				languageName = "English";
+			} else if (language === "hi") {
+				languageName = "Hindi";
+			} else if (language === "kn") {
+				languageName = "Kannada";
+			} else if (language === "ml") {
+				languageName = "Malayalam";
+			} else {
+				languageName = language; // Fallback to the language code if not matched
+			}
+
+			option.textContent = languageName;
+			languageSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error fetching languages:", error);
+            }
+        }
+
+        fetchLanguages();
+
+        async function startRecording() {
+            try {
+                console.log('Starting recording...');
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                console.log('Microphone access granted');
+
+                recorder = new RecordRTC(stream, {
+                    type: 'audio',
+                    recorderType: RecordRTC.StereoAudioRecorder,
+                    mimeType: 'audio/wav',
+                    numberOfAudioChannels: 1,  // Mono channel is sufficient for speech recognition
+                    desiredSampRate: 16000,
+                    timeSlice: 5000, // Get data every 5 seconds
+                    ondataavailable: (blob) => {
+                        if (blob && blob.size > 0) {
+                            audioQueue.push(blob);
+                            sendAudioChunks();
+                        }
+                    }
+                });
+
+                recorder.startRecording();
+                console.log('Recording started');
+            } catch (error) {
+                console.log('Error accessing microphone:', error);
+            }
+        }
+
+        function stopRecording() {
+            console.log('Stopping recording...');
+            if (recorder && recorder.getState() !== 'inactive') {
+                recorder.stopRecording(() => {
+                    console.log('Recording stopped');
+                    recorder.destroy(); // Clean up the recorder
+                    recorder = null;
+                });
+            }
+        }
+
+        async function sendAudioChunks() {
+            if (audioQueue.length > 0 && !isSending) {
+                isSending = true;
+                const audioBlob = audioQueue.shift();
+                const arrayBuffer = await audioBlob.arrayBuffer();
+                const base64String = arrayBufferToBase64(arrayBuffer);
+                const language = document.getElementById("language-select").value;
+                console.log('Sending audio data to server');
+                transcribeAndProcessSocket.send(JSON.stringify({ audio: base64String, language: language, user_id: userId }));
+                console.log('Sent audio data to server');
+                isSending = false;
+                sendAudioChunks();  // Continue sending remaining chunks
+            } else {
+                console.log('No audio chunks to send');
+            }
+        }
+
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            const len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+
+        function startTranscriptionAndProcessing() {
+            transcribeAndProcessSocket = new WebSocket("ws://localhost:8000/v1/ws/transcription");
+
+            transcribeAndProcessSocket.onopen = () => {
+                console.log('Transcription and Processing WebSocket connected');
+                document.getElementById('start-button').style.display = 'none';
+                document.getElementById('stop-button').style.display = 'block';
+                startRecording();
+            };
+
+            transcribeAndProcessSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleWebSocketMessage(data);
+            };
+
+            transcribeAndProcessSocket.onclose = () => {
+                console.log('Transcription and Processing WebSocket disconnected');
+                document.getElementById('start-button').style.display = 'block';
+                document.getElementById('stop-button').style.display = 'none';
+                stopRecording();
+            };
+        }
+
+        function handleWebSocketMessage(data) {
+            const transcriptionElement = document.getElementById('transcription');
+
+            if (data.type === "transcription") {
+                // Append the transcription text with the message_id as a reference
+                if (!transcriptionMap[data.message_id]) {
+                    transcriptionMap[data.message_id] = document.createElement('div');
+                    transcriptionMap[data.message_id].textContent = data.text + " ";
+                    transcriptionElement.appendChild(transcriptionMap[data.message_id]);
+                } else {
+                    transcriptionMap[data.message_id].textContent += data.text + " ";
+                }
+            } else if (data.type === "concise" || data.type === "highlight") {
+                // Replace the content for the corresponding message_id with processed text
+                if (transcriptionMap[data.message_id]) {
+                    transcriptionMap[data.message_id].textContent = data.text;
+                }
+            }
+        }
+
+        function stopTranscriptionAndProcessing() {
+            console.log('Stopping transcription and processing...');
+            if (recorder && recorder.getState() !== 'inactive') {
+                recorder.stopRecording(() => {
+                    console.log('Recording stopped');
+                    recorder.destroy(); // Clean up the recorder
+                    recorder = null;
+                });
+            }
+
+            if (transcribeAndProcessSocket && transcribeAndProcessSocket.readyState === WebSocket.OPEN) {
+                transcribeAndProcessSocket.close(); // Close the WebSocket connection
+                console.log('WebSocket connection closed');
+            }
+
+            // Update button visibility
+            document.getElementById('start-button').style.display = 'block';
+            document.getElementById('stop-button').style.display = 'none';
+        }
+
+        document.getElementById('start-button').addEventListener('click', startTranscriptionAndProcessing);
+        document.getElementById('stop-button').addEventListener('click', stopTranscriptionAndProcessing);
+
+        // TTS section
+        const textInput = document.getElementById("text-input");
+
+        textInput.addEventListener('input', () => {
+            const currentText = textInput.value;
+
+            // Regular expression to match sentence-ending punctuation (., ?, !)
+            const sentenceEndings = /[.?!]/g;
+            const sentences = currentText.split(sentenceEndings);
+
+            if (sentences.length > 1) {
+                const buffer = sentences.slice(0, -1).join('.') + currentText.match(sentenceEndings).slice(0, -1).join('');
+                console.log("Sending TTS text:", buffer);
+                sendTtsText(buffer);
+                textInput.value = sentences[sentences.length - 1]; // Keep the last incomplete part
+            }
+        });
+        
+        function sendTtsText(text) {
+            let ttsSocket;
+            const jsonData = JSON.stringify({ text: text, language: document.getElementById("language-select").value, user_id: userId });  // Send selected language and user ID with text
+
+            if (!ttsSocket || ttsSocket.readyState !== WebSocket.OPEN) {
+                ttsSocket = new WebSocket("ws://localhost:8000/v1/ws/speech");
+                ttsSocket.onopen = () => {
+                    console.log("TTS WebSocket connected");
+                    ttsSocket.send(jsonData);  // Send JSON data
+                };
+            } else {
+                ttsSocket.send(jsonData);  // Send JSON data
+            }
+
+            ttsSocket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                if (message.audio) {
+                    console.log("Received TTS audio data");
+                    playTtsAudio(message.audio);
+                }
+            };
+
+            ttsSocket.onclose = () => {
+                console.log("TTS WebSocket disconnected");
+            };
+        }
+
+        function playTtsAudio(audioBase64) {
+            const audioBytes = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0));
+            const audioContext = new AudioContext();
+            audioContext.decodeAudioData(audioBytes.buffer, buffer => {
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.start();
+            });
+        }
+    </script>
+</body>
+</html>

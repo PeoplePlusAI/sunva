@@ -1,0 +1,28 @@
+# Goal
+
+Analyze the text which is a transcription of a conversation and figure out whether the paragraph is completed or yet to complete. If the paragraph is completed, return True. If the paragraph is not completed, return False.
+
+text: {}
+
+# Output format
+
+Return True when the paragraph is completed. Return False when the paragraph is not completed.
+
+
+# Examples
+
+Text: Hey, how's it going? I just wanted to catch up and 
+
+Response: False
+
+Text: The purpose of this study was to investigate the effects of sleep deprivation on cognitive performance. A sample of 100 participants was divided into two groups: one that received a full night's sleep and another that stayed awake for 24 hours. 
+
+Response: True
+
+Text: We are pleased to announce the launch of our new product line, which includes a range of innovative features and enhancements. Our team has worked tirelessly to develop these products, and we are excited to share them with our customers. The new product line will be available for purchase starting next month, and we are confident that it will meet the needs and expectations of our customers.
+
+Response: True
+
+Text: The quick brown fox jumps 
+
+Response: False
